@@ -9,6 +9,8 @@
 ** https://nhnacademy.dooray.com/task/3570281639368311346/3666108764522311867
 
 == 구현 및 제출
+* link:resources/shoppingmall.sql[shoppingmall.sql]을 참고하여 erd를 설계 합니다.
+* link:15.More.adoc[15.More.adoc] 최대한 할 수 있는 데까지 구현합니다.
 * todo는 1번부터 순서대로 진행합니다.
 * git clone 후 구현합니다.
 * main branch를 기준으로  feature/{학번} branch를 생성하여 진행합니다.
@@ -17,3 +19,4 @@
 
 == Test Code
 * ** com.nhnacademy.shoppingmall.check 하위 package에 Test Code를 작성하지 않습니다. **
+
