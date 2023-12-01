@@ -19,28 +19,32 @@ public class UserRepositoryImpl implements UserRepository {
           해당 코드는 SQL Injection이 발생합니다. SQL Injection이 발생하지 않도록 수정하세요.
          */
         Connection connection = DbConnectionThreadLocal.getConnection();
-        String sql =String.format("select user_id, user_name, user_password, user_birth, user_auth, user_point, created_at, latest_login_at from users where user_id='%s' and user_password ='%s'",
+        String sql =String.format("select user_id, user_name, user_password, user_birth, user_auth, user_point, created_at, latest_login_at from users where user_id=? and user_password =?",
                 userId,
                 userPassword
         );
 
         log.debug("sql:{}",sql);
 
-        try( Statement psmt = connection.createStatement();
-             ResultSet rs =  psmt.executeQuery(sql);
-        ) {
-            if(rs.next()){
-                User user = new User(
-                        rs.getString("user_id"),
-                        rs.getString("user_name"),
-                        rs.getString("user_password"),
-                        rs.getString("user_birth"),
-                        User.Auth.valueOf(rs.getString("user_auth")),
-                        rs.getInt("user_point"),
-                        Objects.nonNull(rs.getTimestamp("created_at")) ? rs.getTimestamp("created_at").toLocalDateTime() : null,
-                        Objects.nonNull(rs.getTimestamp("latest_login_at")) ? rs.getTimestamp("latest_login_at").toLocalDateTime() : null
-                );
-                return Optional.of(user);
+        try(PreparedStatement psmt = connection.prepareStatement(sql)) {
+            psmt.setString(1, userId);
+            psmt.setString(2, userPassword);
+            try (ResultSet rs = psmt.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User(
+                            rs.getString("user_id"),
+                            rs.getString("user_name"),
+                            rs.getString("user_password"),
+                            rs.getString("user_birth"),
+                            User.Auth.valueOf(rs.getString("user_auth")),
+                            rs.getInt("user_point"),
+                            Objects.nonNull(rs.getTimestamp("created_at")) ?
+                                    rs.getTimestamp("created_at").toLocalDateTime() : null,
+                            Objects.nonNull(rs.getTimestamp("latest_login_at")) ?
+                                    rs.getTimestamp("latest_login_at").toLocalDateTime() : null
+                    );
+                    return Optional.of(user);
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -52,36 +56,139 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<User> findById(String userId) {
         //todo#3-2 회원조회
+        Connection connection = DbConnectionThreadLocal.getConnection();
+        String sql =String.format("select user_id, user_name, user_password, user_birth, user_auth, user_point, created_at, latest_login_at from users where user_id=?",
+                userId
+        );
+        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
+            psmt.setString(1, userId);
+
+            try (ResultSet rs = psmt.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User(
+                            rs.getString("user_id"),
+                            rs.getString("user_name"),
+                            rs.getString("user_password"),
+                            rs.getString("user_birth"),
+                            User.Auth.valueOf(rs.getString("user_auth")),
+                            rs.getInt("user_point"),
+                            Objects.nonNull(rs.getTimestamp("created_at")) ? rs.getTimestamp("created_at").toLocalDateTime() : null,
+                            Objects.nonNull(rs.getTimestamp("latest_login_at")) ? rs.getTimestamp("latest_login_at").toLocalDateTime() : null
+                    );
+                    return Optional.of(user);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
         return Optional.empty();
     }
 
     @Override
     public int save(User user) {
         //todo#3-3 회원등록, executeUpdate()을 반환합니다.
-        return 0;
+        Connection connection = DbConnectionThreadLocal.getConnection();
+        String sql = "INSERT INTO users (user_id, user_name, user_password, user_birth, user_auth, user_point, created_at, latest_login_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        log.debug("sql:{}", sql);
+
+        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
+            psmt.setString(1, user.getUserId());
+            psmt.setString(2, user.getUserName());
+            psmt.setString(3, user.getUserPassword());
+            psmt.setString(4, user.getUserBirth());
+            psmt.setString(5, user.getUserAuth().name());
+            psmt.setInt(6, user.getUserPoint());
+            psmt.setTimestamp(7, Timestamp.valueOf(user.getCreatedAt()));
+            psmt.setTimestamp(8, Objects.nonNull(user.getLatestLoginAt()) ? Timestamp.valueOf(user.getLatestLoginAt()) : null);
+
+
+            return psmt.executeUpdate();
+        }   catch (SQLIntegrityConstraintViolationException e) {
+            log.error("사용자 중복 등록", e);
+            throw new RuntimeException(e);
+        }
+            catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public int deleteByUserId(String userId) {
         //todo#3-4 회원삭제, executeUpdate()을 반환합니다.
-        return 0;
+        Connection connection = DbConnectionThreadLocal.getConnection();
+        String sql = "delete from users where user_id= ?";
+
+        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
+            psmt.setString(1, userId);
+
+            return psmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public int update(User user) {
         //todo#3-5 회원수정, executeUpdate()을 반환합니다.
-        return 0;
+        Connection connection = DbConnectionThreadLocal.getConnection();
+        String sql = "update users set user_id=?, user_name=?, user_password=?, user_birth=?, user_auth=?, user_point=?, created_at=?, latest_login_at=? " +
+                "where user_id=?";
+
+        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
+            psmt.setString(1, user.getUserId());
+            psmt.setString(2, user.getUserName());
+            psmt.setString(3, user.getUserPassword());
+            psmt.setString(4, user.getUserBirth());
+            psmt.setString(5, user.getUserAuth().name());
+            psmt.setInt(6, user.getUserPoint());
+            psmt.setTimestamp(7, Timestamp.valueOf(user.getCreatedAt()));
+            psmt.setTimestamp(8, Objects.nonNull(user.getLatestLoginAt()) ? Timestamp.valueOf(user.getLatestLoginAt()) : null);
+
+            psmt.setString(9, user.getUserId()); //where 절용 파라미터
+            return psmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public int updateLatestLoginAtByUserId(String userId, LocalDateTime latestLoginAt) {
         //todo#3-6, 마지막 로그인 시간 업데이트, executeUpdate()을 반환합니다.
-        return 0;
+        Connection connection = DbConnectionThreadLocal.getConnection();
+        String sql = "update users set latest_login_at=? where user_id=?";
+
+        log.debug("sql:{}", sql);
+        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
+            psmt.setTimestamp(1, Timestamp.valueOf(latestLoginAt));
+            psmt.setString(2, userId);
+
+            return psmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public int countByUserId(String userId) {
         //todo#3-7 userId와 일치하는 회원의 count를 반환합니다.
+        Connection connection = DbConnectionThreadLocal.getConnection();
+        String sql = "select count(*) as count from users where user_id=?";
+
+        log.debug("sql:{}", sql);
+        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
+            psmt.setString(1, userId);
+
+            try (ResultSet rs = psmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("count");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
         return 0;
     }
 
