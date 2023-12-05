@@ -59,7 +59,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("save user -aready exist user")
+    @DisplayName("save user -already exist user")
     void saveUser_exist(){
         Mockito.when(userRepository.countByUserId(anyString())).thenReturn(1);
         Throwable throwable = Assertions.assertThrows(UserAlreadyExistsException.class,()->userService.saveUser(testUser));
