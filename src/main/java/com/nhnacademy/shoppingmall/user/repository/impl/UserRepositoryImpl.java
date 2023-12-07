@@ -174,13 +174,15 @@ public class UserRepositoryImpl implements UserRepository {
         Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = "select count(*) as count from users where user_id=?";
 
-        log.debug("sql:{}", sql);
+
         try (PreparedStatement psmt = connection.prepareStatement(sql)) {
             psmt.setString(1, userId);
-
+            log.debug("sql:{}", sql);
             try (ResultSet rs = psmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt("count");
+                    int countId = rs.getInt("count");
+                    log.debug("count : " + String.valueOf(countId));
+                    return countId;
                 }
             }
         } catch (SQLException e) {
