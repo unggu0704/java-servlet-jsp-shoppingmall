@@ -6,7 +6,10 @@ import com.nhnacademy.shoppingmall.user.service.UserService;
 import com.nhnacademy.shoppingmall.user.domain.User;
 import com.nhnacademy.shoppingmall.user.repository.UserRepository;
 import java.time.LocalDateTime;
+import java.util.Stack;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
@@ -51,9 +54,10 @@ public class UserServiceImpl implements UserService {
     public User doLogin(String userId, String userPassword) {
         //todo#4-5 로그인 구현, userId, userPassword로 일치하는 회원 조회
         User user = userRepository.findByUserIdAndUserPassword(userId, userPassword).orElse(null);
-        if (user == null)
-            throw new UserNotFoundException("아이디와 비밀번호가 맞지 않습니다.");
-        else
+        if (user == null) {
+            log.info("로그인 실패");
+            return null;
+        } else
             userRepository.updateLatestLoginAtByUserId(userId, LocalDateTime.now());
         return user;
     }
