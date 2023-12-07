@@ -17,6 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 public class UserUpdateGetController implements BaseController {
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) {
-        return "shop/userInfo/update_form";
+        return "shop/mypage/userInfo/update_form";
     }
 }

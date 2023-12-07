@@ -1,15 +1,13 @@
-package com.nhnacademy.shoppingmall.controller.userinfo;
+package com.nhnacademy.shoppingmall.controller.mypage;
 
 import com.nhnacademy.shoppingmall.common.mvc.annotation.RequestMapping;
 import com.nhnacademy.shoppingmall.common.mvc.controller.BaseController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-@RequestMapping(method = RequestMapping.Method.GET,value = "/userInfo/userinfo.do")
-public class UserInfoController implements BaseController {
-
+@RequestMapping(method = RequestMapping.Method.GET,value = "/mypage/mypage.do")
+public class MyPageController implements BaseController{
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) {
-        return "shop/mypage/userInfo/userinfo";
+        return "shop/mypage/mypage";
     }
 }

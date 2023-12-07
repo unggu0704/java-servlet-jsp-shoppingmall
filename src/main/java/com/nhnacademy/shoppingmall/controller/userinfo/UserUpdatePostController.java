@@ -34,9 +34,11 @@ public class UserUpdatePostController implements BaseController {
         String userId = user.getUserId();
         LocalDateTime userCreatedAt = user.getCreatedAt();
         LocalDateTime userLastLoginAt = user.getLatestLoginAt();
-        userService.updateUser(new User(userId, userName, userPassword, userBirth, userAuth, userPoint, userCreatedAt, userLastLoginAt));
 
+        User updatedUser = new User(userId, userName, userPassword, userBirth, userAuth, userPoint, userCreatedAt, userLastLoginAt);
+        userService.updateUser(updatedUser);
+        session.setAttribute("user", updatedUser);
         log.info(user.getUserName() + "을 update 완료 ");
-        return "shop/userInfo/userinfo";
+        return "shop/mypage/userInfo/userinfo";
     }
 }
