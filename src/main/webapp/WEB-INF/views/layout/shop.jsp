@@ -40,6 +40,7 @@
 
                             <c:choose>
                             <c:when test="${sessionScope.user ne null}">
+                                <a class="btn btn-outline-light me-2" href = '/userInfo/userinfo.do'>마이 페이지</a>
                                 <a class="btn btn-outline-light me-2" href = '/logout.do'>로그아웃</a>
                             </c:when>
                             <c:otherwise>

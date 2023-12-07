@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-₩
+
 @Slf4j
 @RequestMapping(method = RequestMapping.Method.POST, value ="/loginAction.do")
 public class LoginPostController implements BaseController {
@@ -26,7 +26,6 @@ public class LoginPostController implements BaseController {
         String userId = req.getParameter("user_id");
         String password = req.getParameter("user_password");
         req.setAttribute("loginFail", false);
-        log.debug(userId + " |" + password);
         User user = userService.doLogin(userId, password);
         if (Objects.nonNull(user)) {
             log.info("Execute");
