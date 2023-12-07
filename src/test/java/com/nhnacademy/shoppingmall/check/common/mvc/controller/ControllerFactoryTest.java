@@ -41,6 +41,7 @@ class ControllerFactoryTest {
         classSet = Set.of(
                 IndexController.class,
                 LoginController.class,
+
                 LoginPostController.class);
         controllerFactory.initialize(classSet ,ctx);
     }
