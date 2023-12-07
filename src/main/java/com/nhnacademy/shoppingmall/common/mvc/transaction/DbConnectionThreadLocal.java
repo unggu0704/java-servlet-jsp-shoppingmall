@@ -48,35 +48,33 @@ public class DbConnectionThreadLocal {
 
     public static void reset(){
         Connection resetConnection = connectionThreadLocal.get();
-
-        //todo#2-4 사용이 완료된 connection은 close를 호출하여 connection pool에 반환합니다.
-        if(resetConnection != null){
-            try {
-                resetConnection.close();
-            } catch (Exception e) {
-                log.error("connection close error", e);
-            }
-        }
+        if (resetConnection == null)
+            throw new NullPointerException("connection null");
 
         //todo#2-5 getSqlError() 에러가 존재하면 rollback 합니다.
         if(getSqlError()){
             try {
-                assert resetConnection != null;
                 resetConnection.rollback();
             } catch (Exception e) {
                 log.error("rollback error", e);
             }
         }
-
         //todo#2-6 getSqlError() 에러가 존재하지 않다면 commit 합니다.
         else{
-            try {
-                assert resetConnection != null;
-                resetConnection.commit();
+                try {
+                    resetConnection.commit();
             } catch (Exception e) {
                 log.error("commit error", e);
             }
         }
+
+        //todo#2-4 사용이 완료된 connection은 close를 호출하여 connection pool에 반환합니다.
+        try {
+                resetConnection.close();
+            } catch (Exception e) {
+                log.error("connection close error", e);
+            }
+
 
         //todo#2-7 현제 사용하고 있는 connection을 재 사용할 수 없도록 connectionThreadLocal을 초기화 합니다.
         connectionThreadLocal.remove();

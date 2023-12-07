@@ -53,8 +53,6 @@ public class ControllerFactory {
                 e.printStackTrace(); // Handle or log the exception as needed
             }
         }
-
-
         //todo#5-2 ctx(ServletContext)에  attribute를 추가합니다. -> key : CONTEXT_CONTROLLER_FACTORY_NAME, value : ControllerFactory
         ctx.setAttribute(CONTEXT_CONTROLLER_FACTORY_NAME, this);
     }
