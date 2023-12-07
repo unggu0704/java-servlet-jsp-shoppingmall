@@ -27,7 +27,7 @@
 
                     <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                         <li><a href="/index.do" class="nav-link px-2 text-secondary">Home</a></li>
-                        <li><a href="#" class="nav-link px-2 text-white">마이페이지</a></li>
+                        <li><a href="/mypage/mypage.do" class="nav-link px-2 text-white">마이페이지</a></li>
                     </ul>
 
                     <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
@@ -40,7 +40,6 @@
 
                             <c:choose>
                             <c:when test="${sessionScope.user ne null}">
-                                <a class="btn btn-outline-light me-2" href = '/userInfo/userinfo.do'>마이 페이지</a>
                                 <a class="btn btn-outline-light me-2" href = '/logout.do'>로그아웃</a>
                             </c:when>
                             <c:otherwise>
