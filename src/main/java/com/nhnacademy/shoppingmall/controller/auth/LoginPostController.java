@@ -7,12 +7,13 @@ import com.nhnacademy.shoppingmall.user.repository.impl.UserRepositoryImpl;
 import com.nhnacademy.shoppingmall.user.service.UserService;
 import com.nhnacademy.shoppingmall.user.service.impl.UserServiceImpl;
 
+import java.util.Objects;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-
+₩
 @Slf4j
 @RequestMapping(method = RequestMapping.Method.POST, value ="/loginAction.do")
 public class LoginPostController implements BaseController {
@@ -24,16 +25,17 @@ public class LoginPostController implements BaseController {
         //todo#13-2 로그인 구현, session은 60분동안 유지됩니다.
         String userId = req.getParameter("user_id");
         String password = req.getParameter("user_password");
-
+        req.setAttribute("loginFail", false);
         log.debug(userId + " |" + password);
-        Optional<User> userOptional = Optional.ofNullable(userService.doLogin(userId, password));
-
-        if (userOptional.isPresent()) {
+        User user = userService.doLogin(userId, password);
+        if (Objects.nonNull(user)) {
+            log.info("Execute");
             HttpSession session = req.getSession(true); //세션이 없으면 새로 생성한다.
             session.setMaxInactiveInterval(60 * 60);
-            session.setAttribute("user", userOptional.get());
+            session.setAttribute("user", user);
             return "shop/main/index";
         }
+        req.setAttribute("loginFail", true);
         return "shop/login/login_form";
     }
 }
