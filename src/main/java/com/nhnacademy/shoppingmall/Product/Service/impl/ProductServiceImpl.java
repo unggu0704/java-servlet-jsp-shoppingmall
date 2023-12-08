@@ -5,6 +5,7 @@ import com.nhnacademy.shoppingmall.Product.domain.Product;
 import com.nhnacademy.shoppingmall.Product.repository.ProductRepository;
 import com.nhnacademy.shoppingmall.common.page.Page;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,11 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return pageProducts.get();
+    }
+
+    @Override
+    public List<Product> getAllProdcutList() {
+        return productRepository.findAllList();
     }
 
 

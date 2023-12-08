@@ -80,6 +80,35 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    public List<Product> findAllList() {
+        Connection connection = DbConnectionThreadLocal.getConnection();
+        String sql = "SELECT * FROM Products;";
+        try {
+            PreparedStatement psmt = connection.prepareStatement(sql);
+            List<Product> productList = new ArrayList<>();
+            ResultSet resultSet = psmt.executeQuery();
+            while (resultSet.next()) {
+                Product product = new Product();
+
+                product.setProductId(resultSet.getInt("productId"));
+                product.setCategoryId(resultSet.getInt("categoryId")); // 수정
+                product.setModelNumber(resultSet.getString("modelNumber")); // 수정
+                product.setModelName(resultSet.getString("modelName"));
+                product.setProductImage(resultSet.getString("productImage")); // 수정
+                product.setUnitCost(resultSet.getBigDecimal("unitCost")); // 수정
+                product.setDescription(resultSet.getString("description"));
+
+                productList.add(product);
+            }
+            return productList;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    @Override
     public int save(Product product) {
         Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = "INSERT INTO Products (CategoryId, ModelNumber, ModelName, ProductImage, UnitCost, Description) VALUES (?, ?, ?, ?, ?, ?)";

@@ -12,6 +12,8 @@ public interface ProductRepository {
 
     Optional<Page<Product>> findProductList(int pageSize, int currentPage);
 
+    List<Product> findAllList();
+
     int save(Product product);
     int deleteByProductId(String productId);
     int update(Product product);
