@@ -16,7 +16,7 @@
         <div class="col-md-3">
             <ul class="nav nav-pills flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">유저 목록</a>
+                    <a class="nav-link" href="/admin/productList.do">상품 목록</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/admin/addProduct.do">상품 추가</a>
