@@ -1,11 +1,13 @@
 package com.nhnacademy.shoppingmall.user.service.impl;
 
+import com.nhnacademy.shoppingmall.Product.domain.Product;
 import com.nhnacademy.shoppingmall.user.exception.UserAlreadyExistsException;
 import com.nhnacademy.shoppingmall.user.exception.UserNotFoundException;
 import com.nhnacademy.shoppingmall.user.service.UserService;
 import com.nhnacademy.shoppingmall.user.domain.User;
 import com.nhnacademy.shoppingmall.user.repository.UserRepository;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Stack;
 import lombok.extern.slf4j.Slf4j;
 

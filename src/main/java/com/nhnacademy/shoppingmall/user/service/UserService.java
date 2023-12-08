@@ -1,6 +1,8 @@
 package com.nhnacademy.shoppingmall.user.service;
 
+import com.nhnacademy.shoppingmall.Product.domain.Product;
 import com.nhnacademy.shoppingmall.user.domain.User;
+import java.util.Map;
 
 public interface UserService {
 

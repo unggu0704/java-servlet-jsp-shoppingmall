@@ -3,6 +3,8 @@ package com.nhnacademy.shoppingmall.Product.Service.impl;
 import com.nhnacademy.shoppingmall.Product.Service.ProductService;
 import com.nhnacademy.shoppingmall.Product.domain.Product;
 import com.nhnacademy.shoppingmall.Product.repository.ProductRepository;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class ProductServiceImpl implements ProductService {
@@ -32,7 +34,16 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
+    @Override
+    public Map<Integer, Product> getProductMap() {
+        Optional<Map<Integer, Product>> productMapOptional = productRepository.findAllProducts();
 
+        if (!productMapOptional.isPresent()) {
+            throw new RuntimeException("상품들을 불러오는데 실패했습니다.");
+        }
+
+        return productMapOptional.get();
+    }
 
 
     /**

@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
+import java.util.*;
 
 public class ProductRepositoryImpl implements ProductRepository {
 
@@ -38,6 +39,35 @@ public class ProductRepositoryImpl implements ProductRepository {
             throw new RuntimeException(e);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public Optional<Map<Integer, Product>> findAllProducts() {
+        Connection connection = DbConnectionThreadLocal.getConnection();
+
+        String sql = "SELECT * FROM Products";
+        try {
+            PreparedStatement psmt = connection.prepareStatement(sql);
+            ResultSet resultSet = psmt.executeQuery();
+
+            // 상품 정보를 Map에 저장합니다.
+            Map<Integer, Product> products = new HashMap<>();
+            while (resultSet.next()) {
+                Product product = new Product(
+                        resultSet.getInt("ProductId"),
+                        resultSet.getInt("CategoryId"),
+                        resultSet.getString("ModelNumber"),
+                        resultSet.getString("ModelName"),
+                        resultSet.getString("ProductImage"),
+                        resultSet.getBigDecimal("UnitCost"),
+                        resultSet.getString("Description")
+                );
+                products.put(product.getProductId(), product);
+            }
+            return Optional.of(products);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
