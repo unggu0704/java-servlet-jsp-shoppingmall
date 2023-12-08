@@ -3,6 +3,7 @@ package com.nhnacademy.shoppingmall.Product.Service.impl;
 import com.nhnacademy.shoppingmall.Product.Service.ProductService;
 import com.nhnacademy.shoppingmall.Product.domain.Product;
 import com.nhnacademy.shoppingmall.Product.repository.ProductRepository;
+import com.nhnacademy.shoppingmall.common.page.Page;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -35,14 +36,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Map<Integer, Product> getProductMap() {
-        Optional<Map<Integer, Product>> productMapOptional = productRepository.findAllProducts();
+    public Page<Product> getProductPageList(int pageSize, int currentPage) {
+        Optional<Page<Product>> pageProducts = productRepository.findProductList(pageSize, currentPage);
 
-        if (!productMapOptional.isPresent()) {
+        if (!pageProducts.isPresent()) {
             throw new RuntimeException("상품들을 불러오는데 실패했습니다.");
         }
 
-        return productMapOptional.get();
+        return pageProducts.get();
     }
 
 

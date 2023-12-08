@@ -1,13 +1,14 @@
 package com.nhnacademy.shoppingmall.Product.Service;
 
 import com.nhnacademy.shoppingmall.Product.domain.Product;
+import com.nhnacademy.shoppingmall.common.page.Page;
 import java.util.Map;
 
 public interface ProductService {
 
     Product getProduct(int productId);
 
-    Map<Integer, Product> getProductMap();
+    Page<Product> getProductPageList(int pageSize, int currentPage);
 
     void saveProduct(Product product);
 

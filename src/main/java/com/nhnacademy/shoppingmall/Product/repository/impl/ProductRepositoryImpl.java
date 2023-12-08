@@ -3,6 +3,7 @@ package com.nhnacademy.shoppingmall.Product.repository.impl;
 import com.nhnacademy.shoppingmall.Product.domain.Product;
 import com.nhnacademy.shoppingmall.Product.repository.ProductRepository;
 import com.nhnacademy.shoppingmall.common.mvc.transaction.DbConnectionThreadLocal;
+import com.nhnacademy.shoppingmall.common.page.Page;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -42,16 +43,17 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Optional<Map<Integer, Product>> findAllProducts() {
+    public Optional<Page<Product>> findProductList(int pageSize, int currentPage) {
         Connection connection = DbConnectionThreadLocal.getConnection();
 
-        String sql = "SELECT * FROM Products";
+        String sql = "SELECT * FROM Products LIMIT ?, ?";
         try {
             PreparedStatement psmt = connection.prepareStatement(sql);
+            psmt.setInt(1, (currentPage - 1) * pageSize);
+            psmt.setInt(2, pageSize);
             ResultSet resultSet = psmt.executeQuery();
 
-            // 상품 정보를 Map에 저장합니다.
-            Map<Integer, Product> products = new HashMap<>();
+            List<Product> products = new ArrayList<>();
             while (resultSet.next()) {
                 Product product = new Product(
                         resultSet.getInt("ProductId"),
@@ -62,9 +64,16 @@ public class ProductRepositoryImpl implements ProductRepository {
                         resultSet.getBigDecimal("UnitCost"),
                         resultSet.getString("Description")
                 );
-                products.put(product.getProductId(), product);
+                products.add(product);
             }
-            return Optional.of(products);
+
+            String countSql = "SELECT COUNT(*) FROM Products";
+            psmt = connection.prepareStatement(countSql);
+            resultSet = psmt.executeQuery();
+            resultSet.next();
+            long totalCount = resultSet.getLong(1);
+
+            return Optional.of(new Page<>(products, totalCount));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
