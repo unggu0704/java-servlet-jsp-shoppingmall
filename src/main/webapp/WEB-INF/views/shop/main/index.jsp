@@ -6,6 +6,7 @@
 <%@ page import="java.util.HashMap" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<%@ page import="java.lang.Math" %>
 <%
     int pageSize = 9; // 한 페이지에 표시할 상품 개수
     int currentPage = 1;
@@ -13,28 +14,33 @@
         currentPage = Integer.parseInt(request.getParameter("currentPage"));
     }
     Page<Product> pageProducts = new ProductServiceImpl(new ProductRepositoryImpl()).getProductPageList(pageSize, currentPage);
-    long totalPage = pageProducts.getTotalCount() / pageSize; // 전체 페이지 알기
+
+    long totalCount = pageProducts.getTotalCount();
 
     // 페이지 처리를 위한 변수 선언
-    int beginPage = (currentPage - 1) / pageSize * pageSize + 1;
-    long endPage = Math.min(totalPage, beginPage + pageSize);
+    long totalPage = (totalCount + pageSize - 1) / pageSize; // 전체 페이지 알기
 
+    int beginPage = (currentPage - 1) / pageSize * pageSize + 1;
+    long endPage = Math.min(totalPage, beginPage + pageSize - 1);
 %>
+
 
 <%-- 상품 목록 --%>
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
     <% for (Product product : pageProducts.getContent()) { %>
     <div class="col">
         <div class="card shadow-sm">
-            <img src="src/main/webapp/resources/no-image.png" class="card-img-top" alt="상품 이미지">
+            <img src=<%= product.getProductImage() %> class="card-img-top" alt="상품 이미지" width = "300" height="500">
             <div class="card-body">
                 <h5 class="card-title"><%= product.getModelName() %></h5>
                 <p class="card-text"><%= product.getDescription() %></p>
                 <p class="card-text">가격: <span class="price"><%= product.getUnitCost().toPlainString() %>원</span></p>
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                        <form action="/product/prodcutDetail.do" method="post">
+                            <input type="hidden" name="productID" value="<%= product.getProductId()%>">
+                            <button type="submit">자세히 보기</button>
+                        </form>
                     </div>
                     <small class="text-muted">9 mins</small>
                 </div>

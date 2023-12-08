@@ -7,7 +7,9 @@ import com.nhnacademy.shoppingmall.common.page.Page;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
@@ -57,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
         if (productRepository.findById(product.getProductId()).isPresent()) {
             throw new RuntimeException("상품 ID " + product.getProductId() + " 에 해당하는 상품이 이미 존재합니다.");
         }
-
+        log.info("상품 생성");
         productRepository.save(product);
     }
 
