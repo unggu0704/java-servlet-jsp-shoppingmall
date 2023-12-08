@@ -9,9 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 @RequestMapping(method = RequestMapping.Method.GET,value = "/admin/addProduct.do")
 public class AddProductGETController implements BaseController {
-    ProductService productService = new ProductServiceImpl(new ProductRepositoryImpl());
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) {
-
+        return "shop/mypage/admin/addproductForm";
     }
 }
