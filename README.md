@@ -11,7 +11,9 @@
 
 ## ERD
 
-<img src="resources/er.png" alt="ER Diagram" width="60%" height="60%">
+<div align="center">
+    <img src="resources/er.png" alt="ER Diagram" width="60%" height="60%">
+</div>
 
 
 ## 기술 스택
